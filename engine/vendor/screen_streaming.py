@@ -6,26 +6,22 @@ import mss
 import screeninfo
 
 
-# Função para capturar a tela usando mss e redimensionar para 1280x720
+# Função para capturar a tela usando mss
 def capture_screen():
-    screen = screeninfo.get_monitors()[1]
+    screen = screeninfo.get_monitors()[0]
     monitor = {"top": screen.y, "left": screen.x, "width": screen.width, "height": screen.height}
     with mss.mss() as sct:
         img = sct.grab(monitor)
-        # Convertendo a imagem para formato RGB
-        img_rgb = cv2.cvtColor(np.array(img), cv2.COLOR_RGBA2RGB)
-        # Redimensionando a imagem para 1280x720
-        img_resized = cv2.resize(img_rgb, (1280, 720))
-        return img_resized
+        return np.array(img)
 
 
 # Configurações do modelo YOLO
-model = YOLO("../models/best.pt")
+model = YOLO("yolov8n.pt")
 
 # Variáveis de rastreamento e configuração
 track_history = {}
-seguir = False
-deixar_rastro = False
+seguir = True
+deixar_rastro = True
 
 while True:
     img = capture_screen()
@@ -36,15 +32,8 @@ while True:
         results = model(img)
 
     # Processar resultados
-    # Processar resultados
     for result in results:
-        # Desenhar novas bounding boxes
-        for box in result.boxes.xywh:
-            x, y, w, h = box
-            x1, y1, x2, y2 = x - w / 2, y - h / 2, x + w / 2, y + h / 2
-            x1, y1, x2, y2 = int(x1), int(y1), int(x2), int(y2)
-            color = (0, 25, 255)  # cor verde
-            cv2.rectangle(img, (x1, y1), (x2, y2), color, 1)
+        img = result.plot()
 
         if seguir and deixar_rastro:
             try:
