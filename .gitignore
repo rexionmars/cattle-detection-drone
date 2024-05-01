@@ -1,0 +1,8 @@
+# Virtual env
+.venv
+
+# Local data
+datasets
+runs
+vid
+out
