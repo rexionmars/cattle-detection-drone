@@ -29,12 +29,23 @@ while True:
             color = (25, 220, 255)  # cor verde
             geometric.rounded_rectangle(img, (x1, y1, x2 - x1, y2 - y1),
                                         lenght_of_corner=5,
-                                        thickness_of_line=2,
+                                        thickness_of_line=1,
                                         radius_corner=3)
             # Rectângulo de confiança
-            cv2.rectangle(img, (x1, y1 - 20), (x2, y1), color, -1)
-            cv2.putText(img, f"{result.boxes.conf[0].item():.3f}", (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5,
-                        (0, 0, 0), 1)
+            # Cordenadas        x1, y1, x2, y2
+            cv2.rectangle(img, (x1 - 20, y1 - 40), (x1 + 35, y1 - 20), color, -1)
+
+            # Calcula o centro do retângulo
+            retangulo_centro_x = x1 + 20
+            retangulo_centro_y = y1 - 20
+
+            # Desenha uma linha do centro do objeto para o centro do retângulo
+            objeto_centro_x = int((x1 + x2) / 2)
+            objeto_centro_y = int((y1 + y2) / 2)
+            cv2.line(img, (objeto_centro_x, objeto_centro_y), (retangulo_centro_x, retangulo_centro_y), color, 1)
+
+            cv2.putText(img, f"{result.boxes.conf[0].item():.3f}", (x1 - 15, y1 - 25), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5, (0, 0, 0), 1)
 
     cv2.imshow("Tela", img)
 
