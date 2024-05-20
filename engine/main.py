@@ -27,9 +27,8 @@ while True:
 
     results = model(frame)
 
-    # Processar resultados
+    # Desenhar formas geométricas usando OpenCV
     for result in results:
-        # Desenhar novas bounding boxes
         for box in result.boxes.xywh:
             x, y, w, h = box
             x1, y1, x2, y2 = x - w / 2, y - h / 2, x + w / 2, y + h / 2
@@ -37,14 +36,13 @@ while True:
 
             color = (25, 220, 255)
 
-            # Desenhar formas geométricas usando OpenCV
             geometric.rounded_rectangle(frame, (x1, y1, x2 - x1, y2 - y1),
                                         lenght_of_corner=3,
                                         thickness_of_line=1,
                                         radius_corner=3)
 
             # Retângulo de confiança
-            cv2.rectangle(frame, (x1 - 20, y1 - 40), (x1 + 97, y1 - 20), color, -1)
+            cv2.rectangle(frame, (x1 - 20, y1 - 40), (x1 + 60, y1 - 20), color, -1)
 
             # Calcula o centro do retângulo
             rect_center_x = x1 + 20
@@ -61,6 +59,12 @@ while True:
     # Convert the frame to RGB (Pillow uses RGB format)
     frame_pil = Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(frame_pil)
+
+    # Desenha o retangulo do texto
+    draw.rectangle((0, 0, 100, 20), fill=(74, 100, 24))
+    # Draw PotySpy Logo with custom font
+    text = "PotySpy"
+    draw.text((0, 0), text, font=custom_font, fill=(255, 255, 255))
 
     # Desenhar o texto com a fonte personalizada usando Pillow
     for result in results:
